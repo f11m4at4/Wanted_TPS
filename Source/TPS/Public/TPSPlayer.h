@@ -26,4 +26,37 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(
 		class UInputComponent* PlayerInputComponent) override;
+
+public:
+	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* springArmComp;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* cameraComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Settings)
+	float speed = 500;
+	UPROPERTY()
+	FVector direction;
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputMappingContext* imc_tps;
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_move;
+
+	// 이동처리 함수
+	void Move(const struct FInputActionValue& inputValue);
+
+	// InputAction 회전
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_turn;
+	void Turn(const struct FInputActionValue& inputValue);
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_Lookup;
+	void Lookup(const struct FInputActionValue& inputValue);
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_jump;
+	void InputJump(const struct FInputActionValue& inputValue);
 };
