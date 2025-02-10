@@ -3,6 +3,7 @@
 
 #include "TPSPlayer.h"
 
+#include "Bullet.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -66,9 +67,34 @@ ATPSPlayer::ATPSPlayer()
 		ia_jump = TempIAJump.Object;
 	}
 
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	springArmComp->bUsePawnControlRotation = true;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	// 총알발사 입력 애셋로드
+	ConstructorHelpers::FObjectFinder<UInputAction> TempIAFire(TEXT("'/Game/Input/IA_Fire.IA_Fire'"));
+	if (TempIAFire.Succeeded())
+	{
+		ia_fire = TempIAFire.Object;
+	}
+
+	ConstructorHelpers::FClassFinder<ABullet> TempBullet(TEXT("'/Game/Blueprints/BP_Bullet.BP_Bullet_C'"));
+
+	if (TempBullet.Succeeded())
+	{
+		bulletFactory = TempBullet.Class;
+	}
+
+	// 유탄발사기 총
+	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("gunMeshComp"));
+	gunMeshComp->SetupAttachment(GetMesh());
+
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempGun(TEXT("'/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun'"));
+	if (TempGun.Succeeded())
+	{
+		gunMeshComp->SetSkeletalMesh(TempGun.Object);
+		gunMeshComp->SetRelativeLocation(FVector(-20.000000,20.000000,110.000000));
+	}
 }
 
 // Called when the game starts or when spawned
@@ -121,6 +147,7 @@ void ATPSPlayer::SetupPlayerInputComponent(
 		pi->BindAction(ia_turn, ETriggerEvent::Triggered, this, &ATPSPlayer::Turn);
 		pi->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &ATPSPlayer::Lookup);
 		pi->BindAction(ia_jump, ETriggerEvent::Started, this, &ATPSPlayer::InputJump);
+		pi->BindAction(ia_fire, ETriggerEvent::Started, this, &ATPSPlayer::InputFire);
 	}
 }
 
@@ -146,4 +173,11 @@ void ATPSPlayer::Lookup(const struct FInputActionValue& inputValue)
 void ATPSPlayer::InputJump(const struct FInputActionValue& inputValue)
 {
 	Jump();
+}
+
+void ATPSPlayer::InputFire(const struct FInputActionValue& inputValue)
+{
+	// FirePosition 총구위치에서 발사하고 싶다.
+	FTransform firePosition = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	GetWorld()->SpawnActor<ABullet>(bulletFactory, firePosition);
 }

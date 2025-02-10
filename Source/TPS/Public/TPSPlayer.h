@@ -59,4 +59,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Input)
 	class UInputAction* ia_jump;
 	void InputJump(const struct FInputActionValue& inputValue);
+
+	// 총알공장
+	UPROPERTY(EditDefaultsOnly, Category=Bullet)
+	TSubclassOf<class ABullet> bulletFactory;
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_fire;
+	void InputFire(const struct FInputActionValue& inputValue);
+
+	UPROPERTY(VisibleAnywhere)
+	class USkeletalMeshComponent* gunMeshComp;
 };
