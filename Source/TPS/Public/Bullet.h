@@ -33,4 +33,13 @@ public:
 
 	UPROPERTY(EditAnywhere, Category=Settings)
 	float speed = 1000;
+	
+	UPROPERTY(EditAnywhere, Category=Settings)
+	float lifeTime = 2.0f;
+	float currentTime = 0;
+	// 죽음처리 함수
+	void Die();
+
+	// 액터의 특정 속성을 수정하면 자동으로 호출되는 이벤트 콜백
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 };
