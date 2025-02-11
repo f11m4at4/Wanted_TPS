@@ -31,7 +31,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* springArmComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent* cameraComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Settings)
@@ -70,4 +70,41 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	class USkeletalMeshComponent* gunMeshComp;
+
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* sniperGunComp;
+
+	// 유탄총 사용여부
+	bool bUsingGrenadeGun = false;
+	//유탄총으로 변경
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_grenadeGun;
+	void ChangeToGrenadeGun(const struct FInputActionValue& inputValue);
+	//스나이퍼로 변경
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_sniperGun;
+	void ChangeToSniperGun(const struct FInputActionValue& inputValue);
+
+	// 현재 aim 모드 저장
+	bool bSniperAim = false;
+	//WBP_sniperuI
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<class UUserWidget> sniperUIFactory;
+	// INstance
+	UPROPERTY()
+	class UUserWidget* sniperUI;
+	// input
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_sniperScope;
+	void SniperAim(const struct FInputActionValue& inputValue);
+
+	// 총알파편 효과
+	UPROPERTY(EditDefaultsOnly, Category=Bullet)
+	class UParticleSystem* bulletEffectFactory;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<class UUserWidget> crosshairUIFactory;
+	// INstance
+	UPROPERTY()
+	class UUserWidget* crosshairUI;
 };
