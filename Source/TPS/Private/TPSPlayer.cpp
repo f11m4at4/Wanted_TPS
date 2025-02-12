@@ -146,6 +146,14 @@ ATPSPlayer::ATPSPlayer()
 	{
 		bulletEffectFactory = TempBulletEffect.Object;
 	}
+
+	// ABP 등록 해주기
+	ConstructorHelpers::FClassFinder<UAnimInstance> TempABP(TEXT("'/Game/Animations/ABP_Player.ABP_Player_C'"));
+
+	if (TempABP.Succeeded())
+	{
+		GetMesh()->SetAnimInstanceClass(TempABP.Class);
+	}
 }
 
 // Called when the game starts or when spawned
