@@ -16,7 +16,7 @@ void UPlayerAnim::NativeUpdateAnimation(float DeltaSeconds)
 	auto player = Cast<ATPSPlayer>(ownerPawn);
 	if (player)
 	{
-		// speed 값을 설정
+		// walkSpeed 값을 설정
 		FVector velocity = player->GetVelocity();
 		// 전방벡터
 		FVector forward = player->GetActorForwardVector();

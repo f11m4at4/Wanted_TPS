@@ -35,7 +35,10 @@ public:
 	class UCameraComponent* cameraComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Settings)
-	float speed = 500;
+	float walkSpeed = 200;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Settings)
+	float runSpeed = 600;
+	
 	UPROPERTY()
 	FVector direction;
 
@@ -107,4 +110,10 @@ public:
 	// INstance
 	UPROPERTY()
 	class UUserWidget* crosshairUI;
+
+	// 달리기 입력
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_run;
+	void InputRun(const struct FInputActionValue& inputValue);
+
 };

@@ -154,6 +154,14 @@ ATPSPlayer::ATPSPlayer()
 	{
 		GetMesh()->SetAnimInstanceClass(TempABP.Class);
 	}
+
+	// 속도초기화
+	GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+	ConstructorHelpers::FObjectFinder<UInputAction> TempIARun(TEXT("'/Game/Input/IA_Run.IA_Run'"));
+	if (TempIARun.Succeeded())
+	{
+		ia_run = TempIARun.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -195,7 +203,7 @@ void ATPSPlayer::Tick(float DeltaTime)
 	direction = FTransform(GetControlRotation()).TransformVector(direction);
 	
 	// FVector P0 = GetActorLocation();
-	// FVector vt = direction * speed * DeltaTime;
+	// FVector vt = direction * walkSpeed * DeltaTime;
 	// FVector P = P0 + vt;
 	// SetActorLocation(P);
 	AddMovementInput(direction);
@@ -221,6 +229,9 @@ void ATPSPlayer::SetupPlayerInputComponent(
 		// sniper aim 입력 바인딩
 		pi->BindAction(ia_sniperScope, ETriggerEvent::Started, this, &ATPSPlayer::SniperAim);
 		pi->BindAction(ia_sniperScope, ETriggerEvent::Completed, this, &ATPSPlayer::SniperAim);
+
+		pi->BindAction(ia_run, ETriggerEvent::Started, this, &ATPSPlayer::InputRun);
+		pi->BindAction(ia_run, ETriggerEvent::Completed, this, &ATPSPlayer::InputRun);
 	}
 }
 
@@ -326,5 +337,22 @@ void ATPSPlayer::SniperAim(const struct FInputActionValue& inputValue)
 		// -> fov 90
 		cameraComp->SetFieldOfView(45.0f);
 		crosshairUI->RemoveFromParent();
+	}
+}
+
+void ATPSPlayer::InputRun(const struct FInputActionValue& inputValue)
+{
+	auto movement = GetCharacterMovement();
+	// 달리기모드일때
+	if (movement->MaxWalkSpeed > walkSpeed)
+	{
+		// -> 걷기로
+		movement->MaxWalkSpeed = walkSpeed;
+	}
+	// 걷기 중일때
+	else
+	{
+		// -> 달리기로
+		movement->MaxWalkSpeed = runSpeed;
 	}
 }
