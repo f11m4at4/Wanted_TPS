@@ -22,7 +22,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=FSM)
 	bool bIsInAir = false;
 	
-
-	// 매 프레임 갱신되는 함수
 	virtual  void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Anim")
+	void OnPlayFireAnimation();
 };
+
+
+
+
+
+
+
+
+
+
+

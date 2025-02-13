@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "InputAction.h"
 #include "InputMappingContext.h"
+#include "PlayerAnim.h"
 #include "TPS.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -35,7 +36,7 @@ ATPSPlayer::ATPSPlayer()
 	springArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	springArmComp->SetupAttachment(RootComponent);
 	// 위치값 지정하기
-	springArmComp->SetRelativeLocation(FVector(0, 0, 50));
+	springArmComp->SetRelativeLocation(FVector(0, 70, 50));
 
 	// Camera 컴포넌트 생성
 	cameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
@@ -91,23 +92,25 @@ ATPSPlayer::ATPSPlayer()
 
 	// 유탄발사기 총
 	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("gunMeshComp"));
-	gunMeshComp->SetupAttachment(GetMesh());
+	gunMeshComp->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
 
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> TempGun(TEXT("'/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun'"));
 	if (TempGun.Succeeded())
 	{
 		gunMeshComp->SetSkeletalMesh(TempGun.Object);
-		gunMeshComp->SetRelativeLocation(FVector(-20.000000,20.000000,110.000000));
+		gunMeshComp->SetRelativeLocation(FVector(-8.722623,5.497995,-0.691068));
+		gunMeshComp->SetRelativeRotation(FRotator(21.232685,86.422334,-10.949290));
 	}
 
 	sniperGunComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SniperGunComp"));
-	sniperGunComp->SetupAttachment(GetMesh());
+	sniperGunComp->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> TempSniperGun(TEXT("'/Game/SniperGun/sniper11.sniper11'"));
 	if (TempSniperGun.Succeeded())
 	{
 		sniperGunComp->SetStaticMesh(TempSniperGun.Object);
-		sniperGunComp->SetRelativeLocation(FVector(-20,40,130));
+		sniperGunComp->SetRelativeLocation(FVector(-38.476999,0.890077,8.579185));
+		sniperGunComp->SetRelativeRotation(FRotator(21.232685,86.422334,-10.949290));
 		sniperGunComp->SetRelativeScale3D(FVector(0.15f));
 	}
 
@@ -261,6 +264,13 @@ void ATPSPlayer::InputJump(const struct FInputActionValue& inputValue)
 
 void ATPSPlayer::InputFire(const struct FInputActionValue& inputValue)
 {
+	// 총쏘기 애니메이션 재생
+	auto anim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
+	if (anim)
+	{
+		anim->OnPlayFireAnimation();
+	}
+	
 	// 현재 유탄총을 상용중인지 스나이퍼 총을 사용중인지
 	if (bUsingGrenadeGun)
 	{
