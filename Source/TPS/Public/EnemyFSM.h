@@ -42,10 +42,30 @@ public:
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float idleDelayTime = 2;
 	float currentTime = 0;
+
+	// 필요속성 : 타겟, 이동속도, 부모
+	UPROPERTY()
+	class ATPSPlayer* target;
+	UPROPERTY()
+	class AEnemy* me;
+
+	// 필요속성 : 공격범위
+	UPROPERTY(EditAnywhere, Category=FSM)
+	float attackRange = 200;
+	// 필요속성 : 공격대기시간
+	UPROPERTY(EditAnywhere, Category=FSM)
+	float attackDelayTime = 2;
+	
+	// 디버그모드 활성화 여부
+	UPROPERTY(EditAnywhere, Category=DEBUG)
+	bool bDebugPlay = false;
 	
 	void IdleState();
 	void MoveState();
 	void AttackState();
 	void DamageState();
 	void DieState();
+
+	// 피격 당할때 호출될 이벤트 함수
+	void OnDamageProcess();
 };

@@ -4,6 +4,7 @@
 #include "TPSPlayer.h"
 
 #include "Bullet.h"
+#include "EnemyFSM.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -304,6 +305,14 @@ void ATPSPlayer::InputFire(const struct FInputActionValue& inputValue)
 				FVector force = cameraComp->GetForwardVector() * 500000;
 				//float mass = hitComp->GetMass();
 				hitComp->AddImpulseAtLocation(force, hitInfo.Location);
+			}
+
+			// 맞은녀석이 적이면 피격 이벤트 호출해주자.
+			auto enemy = hitInfo.GetActor()->GetDefaultSubobjectByName(TEXT("FSM"));
+			if (enemy)
+			{
+				auto fsm = Cast<UEnemyFSM>(enemy);
+				fsm->OnDamageProcess();
 			}
 		}
 	}
