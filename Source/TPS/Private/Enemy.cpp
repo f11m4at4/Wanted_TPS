@@ -3,6 +3,7 @@
 
 #include "Enemy.h"
 
+#include "EnemyAnim.h"
 #include "EnemyFSM.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -26,13 +27,27 @@ AEnemy::AEnemy()
 	fsm = CreateDefaultSubobject<UEnemyFSM>(TEXT("FSM"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	// abp 로드
+	ConstructorHelpers::FClassFinder<UAnimInstance> TempAnim(TEXT("'/Game/Blueprints/ABP_Enemy.ABP_Enemy_C'"));
+	if (TempAnim.Succeeded())
+	{
+		GetMesh()->SetAnimInstanceClass(TempAnim.Class);
+	}
 }
 
 // Called when the game starts or when spawned
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// auto anim = StaticLoadClass(UEnemyAnim::StaticClass(), nullptr, TEXT("'/Game/Blueprints/ABP_Enemy.ABP_Enemy_C'"));
+	// FSoftClassPath path(TEXT("'/Game/Blueprints/ABP_Enemy.ABP_Enemy_C'"));
+	// TSoftClassPtr<UEnemyAnim> softClass(path);
+	// if (softClass.IsValid())
+	// {
+	// 	auto anim = softClass.LoadSynchronous();
+	// }
 }
 
 // Called every frame

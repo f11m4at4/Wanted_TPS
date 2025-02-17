@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include "TPS.h"
 #include "TPSPlayer.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -39,7 +40,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	// 현재 상태값 출력
 	FString stateStr = UEnum::GetValueAsString(mState);
-	// PRINTLOGTOSCREEN(TEXT("%s"), *stateStr);
+	PRINTLOGTOSCREEN(TEXT("%s"), *stateStr);
 
 	// 디버그모드가 활성화되어 있다면
 	if (bDebugPlay)
@@ -137,16 +138,50 @@ void UEnemyFSM::AttackState()
 	}
 }
 
+// 일정시간이 지나면 상태를 Idle 로 전환하고 싶다.
 void UEnemyFSM::DamageState()
 {
+	currentTime += GetWorld()->DeltaTimeSeconds;
+	if (currentTime > damageDelayTime)
+	{
+		currentTime = 0;
+		mState = EEnemyState::Idle;
+	}
 }
 
+// 아래로 계속 이동하다가 안보이면 제거하고싶다.
 void UEnemyFSM::DieState()
 {
+	// 1. 아래로 이동해야 한다.
+	FVector P = me->GetActorLocation() + FVector::DownVector * dieMoveSpeed * GetWorld()->DeltaTimeSeconds;
+	me->SetActorLocation(P);
+	// 2. 위치가 -200 보다 작으면 없어지게 하자.
+	if (me->GetActorLocation().Z < -200)
+	{
+		// 3. 제거하고 싶다.
+		me->Destroy();
+	}
 }
 
 // 피격당할 때 호출됨
 void UEnemyFSM::OnDamageProcess()
 {
-	me->Destroy();
+	--hp;
+	
+	currentTime = 0;
+	
+	// 만약 체력이 남아있다면
+	if (hp > 0)
+	{
+		// -> 상태를 Damage 로 전환
+		mState = EEnemyState::Damage;
+	}
+	// 그렇지 않으면
+	else
+	{
+		// -> 상태를 Die 로 전환
+		mState = EEnemyState::Die;
+		// 캡슐 충돌체를 꺼져워 한다.
+		me->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }

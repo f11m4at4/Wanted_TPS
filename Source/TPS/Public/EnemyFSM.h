@@ -68,4 +68,16 @@ public:
 
 	// 피격 당할때 호출될 이벤트 함수
 	void OnDamageProcess();
+
+	// 체력
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=FSM)
+	int32 hp = 3;
+
+	// 필요속성 : 피격대기시간
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=FSM)
+	float damageDelayTime = 2;
+
+	// 필요속성 : 이동속도
+	UPROPERTY(EditAnywhere, Category=FSM)
+	float dieMoveSpeed = 50.0f;
 };
