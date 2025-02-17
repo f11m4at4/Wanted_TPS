@@ -4,6 +4,7 @@
 #include "EnemyFSM.h"
 
 #include "Enemy.h"
+#include "EnemyAnim.h"
 #include "TPS.h"
 #include "TPSPlayer.h"
 #include "Components/CapsuleComponent.h"
@@ -29,6 +30,8 @@ void UEnemyFSM::BeginPlay()
 	me = Cast<AEnemy>(GetOwner());
 	// target = Cast<ATPSPlayer>(UGameplayStatics::GetActorOfClass(GetWorld(), ATPSPlayer::StaticClass()));
 	target = Cast<ATPSPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+
+	anim = Cast<UEnemyAnim>(me->GetMesh()->GetAnimInstance());
 }
 
 
@@ -84,6 +87,7 @@ void UEnemyFSM::IdleState()
 		// 3. 상태를 Move 로 바꾼다.
 		mState = EEnemyState::Move;
 		currentTime = 0;
+		anim->animState = mState;
 	}
 }
 
@@ -113,6 +117,9 @@ void UEnemyFSM::MoveState()
 	{
 		// 3. 상태를 공격으로 전환하고 싶다.
 		mState = EEnemyState::Attack;
+		anim->animState = mState;
+		// 바로 공격하도록 대기시간으로 설정
+		currentTime = attackDelayTime;
 	}
 }
 
@@ -126,6 +133,7 @@ void UEnemyFSM::AttackState()
 	{
 		currentTime = 0;
 		PRINTLOGTOSCREEN(TEXT("Attack!!!"));
+		anim->bAttackPlay = true;
 	}
 	// 공격범위를 벗어나면 상태를 이동으로 전환하고 싶다.
 	// 1. 타겟과의 거리
@@ -135,6 +143,7 @@ void UEnemyFSM::AttackState()
 	{
 		// 3. 상태를 이동으로 전환하고 싶다.
 		mState = EEnemyState::Move;
+		anim->animState = mState;
 	}
 }
 

@@ -18,4 +18,11 @@ class TPS_API UEnemyAnim : public UAnimInstance
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=FSM)
 	EEnemyState animState;
+
+	// 공격 애니메이션 재생 여부
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=FSM)
+	bool bAttackPlay = false;
+
+	UFUNCTION()
+	void AnimNotify_AttackEnd();
 };

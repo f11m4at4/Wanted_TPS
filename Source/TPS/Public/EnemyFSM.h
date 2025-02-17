@@ -54,7 +54,7 @@ public:
 	float attackRange = 200;
 	// 필요속성 : 공격대기시간
 	UPROPERTY(EditAnywhere, Category=FSM)
-	float attackDelayTime = 2;
+	float attackDelayTime = 3;
 	
 	// 디버그모드 활성화 여부
 	UPROPERTY(EditAnywhere, Category=DEBUG)
@@ -80,4 +80,7 @@ public:
 	// 필요속성 : 이동속도
 	UPROPERTY(EditAnywhere, Category=FSM)
 	float dieMoveSpeed = 50.0f;
+
+	UPROPERTY()
+	class UEnemyAnim* anim;
 };

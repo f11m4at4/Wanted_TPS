@@ -2,3 +2,8 @@
 
 
 #include "EnemyAnim.h"
+
+void UEnemyAnim::AnimNotify_AttackEnd()
+{
+	bAttackPlay = false;
+}
