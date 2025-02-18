@@ -7,3 +7,9 @@ void UEnemyAnim::AnimNotify_AttackEnd()
 {
 	bAttackPlay = false;
 }
+
+void UEnemyAnim::AnimNotify_DieEnd()
+{
+	// 아래로 내려가기 시작
+	bDieMovingStart = true;
+}

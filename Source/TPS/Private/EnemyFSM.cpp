@@ -9,6 +9,7 @@
 #include "TPSPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/LowLevelTestAdapter.h"
 
 
 // Sets default values for this component's properties
@@ -161,6 +162,12 @@ void UEnemyFSM::DamageState()
 // 아래로 계속 이동하다가 안보이면 제거하고싶다.
 void UEnemyFSM::DieState()
 {
+	// 다이이동 가능할때 이동시키기
+	if (anim->bDieMovingStart == false)
+	{
+		return;
+	}
+	
 	// 1. 아래로 이동해야 한다.
 	FVector P = me->GetActorLocation() + FVector::DownVector * dieMoveSpeed * GetWorld()->DeltaTimeSeconds;
 	me->SetActorLocation(P);
@@ -184,6 +191,11 @@ void UEnemyFSM::OnDamageProcess()
 	{
 		// -> 상태를 Damage 로 전환
 		mState = EEnemyState::Damage;
+
+		// 피격 애니메이션 재생
+		int32 index = FMath::RandRange(0, 1);
+		FString sectionName = FString::Printf(TEXT("Damage%d"), index);
+		anim->PlayDamageAnimation(FName(*sectionName));
 	}
 	// 그렇지 않으면
 	else
@@ -192,5 +204,10 @@ void UEnemyFSM::OnDamageProcess()
 		mState = EEnemyState::Die;
 		// 캡슐 충돌체를 꺼져워 한다.
 		me->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		// 애니메이션 재생
+		anim->PlayDamageAnimation(TEXT("Die"));
 	}
+
+	anim->animState = mState;
 }

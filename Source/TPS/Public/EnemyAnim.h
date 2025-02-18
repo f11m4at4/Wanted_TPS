@@ -25,4 +25,14 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_AttackEnd();
+
+	// 피격 애니메이션 재생 함수
+	UFUNCTION(BlueprintImplementableEvent, Category=FSMEvent)
+	void PlayDamageAnimation(FName sectionName);
+
+	UFUNCTION()
+	void AnimNotify_DieEnd();
+
+	// 다이 상태에서 아래로 내려가기 시작할지 여부
+	bool bDieMovingStart = false;
 };
