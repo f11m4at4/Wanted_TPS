@@ -265,6 +265,14 @@ void ATPSPlayer::InputJump(const struct FInputActionValue& inputValue)
 
 void ATPSPlayer::InputFire(const struct FInputActionValue& inputValue)
 {
+	// 카메라 진동 재생
+	auto pc = GetWorld()->GetFirstPlayerController();
+	if (pc)
+	{
+		pc->PlayerCameraManager->StartCameraShake(cameraShake);
+	}
+
+	
 	// 총쏘기 애니메이션 재생
 	auto anim = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
 	if (anim)

@@ -116,4 +116,7 @@ public:
 	class UInputAction* ia_run;
 	void InputRun(const struct FInputActionValue& inputValue);
 
+	// 카메라 셰이크 블푸저장할 변수
+	UPROPERTY(EditDefaultsOnly, Category=CameraMotion)
+	TSubclassOf<class UCameraShakeBase> cameraShake;
 };
