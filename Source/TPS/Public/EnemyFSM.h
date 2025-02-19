@@ -83,4 +83,21 @@ public:
 
 	UPROPERTY()
 	class UEnemyAnim* anim;
+
+	// Enemy 를 소유하고 있는 AIController
+	UPROPERTY()
+	class AAIController* ai;
+
+	// 길찾기 수행시 랜덤 위치 기억 변수
+	FVector randomPos;
+	// 랜덤 위치 가져오는 함수
+	/**
+	 * 
+	 * @param centerLoc 기준점위치
+	 * @param raidus 검색범위
+	 * @param dest 검색된 위치
+	 * @return 
+	 */
+	bool GetRandomPositionInNavMesh(FVector centerLoc, float radius, FVector& dest);
+	
 };

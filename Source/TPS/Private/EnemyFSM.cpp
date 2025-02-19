@@ -3,13 +3,16 @@
 
 #include "EnemyFSM.h"
 
+#include "AIController.h"
 #include "Enemy.h"
 #include "EnemyAnim.h"
+#include "NavigationSystem.h"
 #include "TPS.h"
 #include "TPSPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/LowLevelTestAdapter.h"
+#include "Navigation/PathFollowingComponent.h"
 
 
 // Sets default values for this component's properties
@@ -33,6 +36,9 @@ void UEnemyFSM::BeginPlay()
 	target = Cast<ATPSPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
 	anim = Cast<UEnemyAnim>(me->GetMesh()->GetAnimInstance());
+
+	// ai controller 가져오기
+	ai = Cast<AAIController>(me->GetController());
 }
 
 
@@ -89,6 +95,9 @@ void UEnemyFSM::IdleState()
 		mState = EEnemyState::Move;
 		currentTime = 0;
 		anim->animState = mState;
+
+		// 패트롤할 랜덤한 위치를 설정
+		GetRandomPositionInNavMesh(me->GetActorLocation(), 500, randomPos);
 	}
 }
 
@@ -102,15 +111,50 @@ void UEnemyFSM::MoveState()
 	{
 		return;
 	}
-	FVector direction = target->GetActorLocation() - me->GetActorLocation();
+	// 목적지
+	FVector destination = target->GetActorLocation();
+	FVector direction = destination - me->GetActorLocation();
 
 	// 1. 타겟과의 거리가 있어야한다.
 	float distance = direction.Size();
 	
 	direction.Normalize();
 
-	me->AddMovementInput(direction);
+	// me->AddMovementInput(direction);
+	// ai controller 를 이용해 이동시켜주자.
+	// 1. 목적지로 이동가능한지 체크하자.
+	auto ns = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 
+	FPathFindingQuery query;
+	FAIMoveRequest req;
+	// 도착 영역 설정
+	req.SetAcceptanceRadius(3);
+	// 도착지 설정
+	req.SetGoalLocation(destination);
+	// 도착지에 도착할 수 있는지 질문 생성
+	ai->BuildPathfindingQuery(req, query);
+	// 질문하기
+	FPathFindingResult r = ns->FindPathSync(query);
+	// -> 가능하면 목적지로 이동해라
+	if (r.Result == ENavigationQueryResult::Success)
+	{
+		ai->MoveToLocation(destination);
+	}
+	// 2. 그렇지 않으면
+	else
+	{
+		// -> 랜덤위치 설정하고 그리로 이동해라
+		// 1. 랜덤위치로 이동해라
+		auto result = ai->MoveToLocation(randomPos);
+		// 2. 랜덤위치에 도착하면?
+		if (result == EPathFollowingRequestResult::Type::AlreadyAtGoal ||
+			result == EPathFollowingRequestResult::Type::Failed)
+		{
+			//	-> 랜덤위치 다시 설정하기
+			GetRandomPositionInNavMesh(me->GetActorLocation(), 500, randomPos);
+		}
+	}
+	
 	// 타겟이 공격범위 안에 들어오면 상태를 공격으로 전환하고 싶다.
 	// 2. 공격범위안에 들어갔으니까
 	// -> 타겟과의 거리가 공격범위보다 작다면
@@ -121,6 +165,8 @@ void UEnemyFSM::MoveState()
 		anim->animState = mState;
 		// 바로 공격하도록 대기시간으로 설정
 		currentTime = attackDelayTime;
+
+		ai->StopMovement();
 	}
 }
 
@@ -145,6 +191,8 @@ void UEnemyFSM::AttackState()
 		// 3. 상태를 이동으로 전환하고 싶다.
 		mState = EEnemyState::Move;
 		anim->animState = mState;
+
+		GetRandomPositionInNavMesh(me->GetActorLocation(), 500, randomPos);
 	}
 }
 
@@ -210,4 +258,20 @@ void UEnemyFSM::OnDamageProcess()
 	}
 
 	anim->animState = mState;
+	// ai 이동 멈추기
+	ai->StopMovement();
+}
+
+// 랜덤위치가져오기
+bool UEnemyFSM::GetRandomPositionInNavMesh(FVector centerLoc, float radius,
+	FVector& dest)
+{
+	auto ns = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+
+	FNavLocation loc;
+	bool bResult = ns->GetRandomReachablePointInRadius(centerLoc, radius, loc);
+
+	// 찾은 랜덤위치 넘겨주기
+	dest = loc.Location;
+	return bResult;
 }
