@@ -119,4 +119,9 @@ public:
 	// 카메라 셰이크 블푸저장할 변수
 	UPROPERTY(EditDefaultsOnly, Category=CameraMotion)
 	TSubclassOf<class UCameraShakeBase> cameraShake;
+
+
+public:
+	UPROPERTY(VisibleAnywhere, Category=PlayerComponent)
+	class UPlayerBaseComponent* playerMove;
 };

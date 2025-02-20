@@ -4,6 +4,8 @@
 #include "EnemyManager.h"
 
 #include "Enemy.h"
+#include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -18,6 +20,9 @@ void AEnemyManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// spawnpoints 찾기
+	FindSpawnPoints();
+	
 	float createTime = FMath::RandRange(minTime, maxTime);
 	// 타이머를 이용해서 적을 생성하자.
 	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &AEnemyManager::CreateEnemy, createTime);
@@ -38,5 +43,27 @@ void AEnemyManager::CreateEnemy()
 	float createTime = FMath::RandRange(minTime, maxTime);
 	// 타이머를 이용해서 적을 생성하자.
 	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &AEnemyManager::CreateEnemy, createTime);
+}
+
+void AEnemyManager::FindSpawnPoints()
+{
+	TArray<AActor*> allActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), allActors);
+	for (auto spawn : allActors)
+	{
+		if (spawn->GetName().Contains(TEXT("BP_SpawnPoint")))
+		{
+			spawnPoints.Add(spawn);
+		}
+	}
+	// for (TActorIterator<AActor> it(GetWorld()); it; ++it)
+	// {
+	// 	AActor* spawn = *it;
+	// 	// 이 액터가 spawnpoint 인지 체크
+	// 	if (spawn->GetName().Contains(TEXT("BP_SpawnPoint")))
+	// 	{
+	// 		spawnPoints.Add(spawn);
+	// 	}
+	// }
 }
 

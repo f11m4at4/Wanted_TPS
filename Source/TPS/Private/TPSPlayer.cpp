@@ -13,6 +13,7 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "PlayerAnim.h"
+#include "PlayerMove.h"
 #include "TPS.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -166,6 +167,9 @@ ATPSPlayer::ATPSPlayer()
 	{
 		ia_run = TempIARun.Object;
 	}
+
+	// Player Move 컴포넌트 추가
+	playerMove = CreateDefaultSubobject<UPlayerMove>(TEXT("PlayerMove"));
 }
 
 // Called when the game starts or when spawned
@@ -223,6 +227,10 @@ void ATPSPlayer::SetupPlayerInputComponent(
 	auto pi = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	if (pi)
 	{
+		// 내 자식 컴포넌트한테 입력 바인딩 하도록 호출
+		playerMove->SetupInputBinding(pi);
+
+		
 		pi->BindAction(ia_move, ETriggerEvent::Triggered, this, &ATPSPlayer::Move);
 		pi->BindAction(ia_turn, ETriggerEvent::Triggered, this, &ATPSPlayer::Turn);
 		pi->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &ATPSPlayer::Lookup);

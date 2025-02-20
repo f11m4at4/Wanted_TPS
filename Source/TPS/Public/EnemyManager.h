@@ -37,4 +37,7 @@ public:
 	
 	// 적을 만들 함수
 	void CreateEnemy();
+
+	// 스폰할 위치 동적으로 찾아 할당하는 함수
+	void FindSpawnPoints();
 };
