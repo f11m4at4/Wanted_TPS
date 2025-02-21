@@ -20,6 +20,10 @@ void UPlayerBaseComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	// owner 값 할당
+	me = Cast<ATPSPlayer>(GetOwner());
+	if (me)
+	{
+		moveComp = me->GetCharacterMovement();
+	}
 }

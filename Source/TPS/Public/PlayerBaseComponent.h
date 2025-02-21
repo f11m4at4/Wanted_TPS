@@ -32,5 +32,5 @@ public:
 public:
 	// 사용자 입력 매핑 함수
 	virtual void SetupInputBinding(
-		class UEnhancedInputComponent* playerInput) {};
+		class UEnhancedInputComponent* pi) {};
 };

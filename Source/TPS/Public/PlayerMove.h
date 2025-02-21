@@ -26,5 +26,38 @@ public:
 	                           FActorComponentTickFunction*
 	                           ThisTickFunction) override;
 
-	virtual  void SetupInputBinding(class UEnhancedInputComponent* playerInput) override;
+	virtual  void SetupInputBinding(class UEnhancedInputComponent* pi) override;
+
+	// InputAction 회전
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_turn;
+	void Turn(const struct FInputActionValue& inputValue);
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_Lookup;
+	void Lookup(const struct FInputActionValue& inputValue);
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+    class UInputAction* ia_move;
+	UPROPERTY()
+	FVector direction;
+	
+	// 이동처리 함수
+	void Move(const struct FInputActionValue& inputValue);
+
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_jump;
+	void InputJump(const struct FInputActionValue& inputValue);
+
+	// 달리기 입력
+	UPROPERTY(EditDefaultsOnly, Category=Input)
+	class UInputAction* ia_run;
+	void InputRun(const struct FInputActionValue& inputValue);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Settings)
+	float walkSpeed = 200;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Settings)
+	float runSpeed = 600;
+	
+
 };

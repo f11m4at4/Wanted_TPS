@@ -35,4 +35,8 @@ public:
 
 	// 다이 상태에서 아래로 내려가기 시작할지 여부
 	bool bDieMovingStart = false;
+
+	// 애니메이션이 플레이어에 피격 이벤트를 호출할 타이밍
+	UFUNCTION()
+	void AnimNotify_AttackStart();
 };

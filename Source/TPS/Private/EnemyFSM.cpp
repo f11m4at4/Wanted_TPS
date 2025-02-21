@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "EnemyAnim.h"
 #include "NavigationSystem.h"
+#include "PlayerDamage.h"
 #include "TPS.h"
 #include "TPSPlayer.h"
 #include "Components/CapsuleComponent.h"
@@ -50,7 +51,7 @@ void UEnemyFSM::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	// 현재 상태값 출력
 	FString stateStr = UEnum::GetValueAsString(mState);
-	PRINTLOGTOSCREEN(TEXT("%s"), *stateStr);
+	// PRINTLOGTOSCREEN(TEXT("%s"), *stateStr);
 
 	// 디버그모드가 활성화되어 있다면
 	if (bDebugPlay)
@@ -180,6 +181,7 @@ void UEnemyFSM::AttackState()
 	{
 		currentTime = 0;
 		PRINTLOGTOSCREEN(TEXT("Attack!!!"));
+		
 		anim->bAttackPlay = true;
 	}
 	// 공격범위를 벗어나면 상태를 이동으로 전환하고 싶다.
