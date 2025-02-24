@@ -12,6 +12,7 @@
 #include "TPSPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Misc/LowLevelTestAdapter.h"
 #include "Navigation/PathFollowingComponent.h"
 
@@ -202,11 +203,32 @@ void UEnemyFSM::AttackState()
 void UEnemyFSM::DamageState()
 {
 	currentTime += GetWorld()->DeltaTimeSeconds;
-	if (currentTime > damageDelayTime)
+	// 최종목적지까지 도착하면 상태를 Idle 로 전환
+	float dist = FVector::Dist(me->GetActorLocation(), KnockBackDestPos);
+	if (currentTime > damageDelayTime || dist < 10)
 	{
 		currentTime = 0;
 		mState = EEnemyState::Idle;
 	}
+
+	// P = p0 + vt
+	// FVector P = me->GetActorLocation() + force;
+	// me->SetActorLocation(P);
+	// -> 부드럽게 주어진 힘만큼 이동시키기
+	// -> 러프를 이용해서 움직이게 해보자
+	// Lerp (from, to, percent(speed))
+	FVector from = me->GetActorLocation();
+	float p = 10 * GetWorld()->DeltaTimeSeconds;
+
+	FVector updatedPos = FMath::Lerp(from, KnockBackDestPos, p);
+	me->SetActorLocation(updatedPos, true);
+
+	// 회전 lerp(from, to, p)
+	FRotator rotFrom = me->GetActorRotation();
+	FVector toward = -knockBackForce;
+	FRotator rotTo = UKismetMathLibrary::MakeRotFromZX(FVector::UpVector, toward);
+	FRotator destRot = FMath::Lerp(rotFrom, rotTo, p);
+	me->SetActorRotation(destRot);
 }
 
 // 아래로 계속 이동하다가 안보이면 제거하고싶다.
@@ -230,7 +252,7 @@ void UEnemyFSM::DieState()
 }
 
 // 피격당할 때 호출됨
-void UEnemyFSM::OnDamageProcess()
+void UEnemyFSM::OnDamageProcess(const FVector& force)
 {
 	--hp;
 	
@@ -246,6 +268,14 @@ void UEnemyFSM::OnDamageProcess()
 		int32 index = FMath::RandRange(0, 1);
 		FString sectionName = FString::Printf(TEXT("Damage%d"), index);
 		anim->PlayDamageAnimation(FName(*sectionName));
+
+		// 뒤로 밀리도록 구현하기
+		// 맞은 방향으로 뒤로 밀리도록 처리하자
+		// 필요속성 : 맞은 방향, 밀릴힘
+
+		knockBackForce = force;
+		knockBackForce.Z = 0;
+		KnockBackDestPos = me->GetActorLocation() + knockBackForce;
 	}
 	// 그렇지 않으면
 	else

@@ -203,7 +203,8 @@ void UPlayerFire::InputFire(const struct FInputActionValue& inputValue)
 			if (enemy)
 			{
 				auto fsm = Cast<UEnemyFSM>(enemy);
-				fsm->OnDamageProcess();
+				FVector force = cameraComp->GetForwardVector() * 500;
+				fsm->OnDamageProcess(force);
 			}
 		}
 	}

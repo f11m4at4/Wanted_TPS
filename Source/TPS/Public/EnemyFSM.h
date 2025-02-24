@@ -67,8 +67,13 @@ public:
 	void DieState();
 
 	// 피격 당할때 호출될 이벤트 함수
-	void OnDamageProcess();
+	void OnDamageProcess(const FVector& force);
 
+	// 넉백 힘 저장
+	FVector knockBackForce;
+	// 최종 위치(넉백 도착위치)
+	FVector KnockBackDestPos;
+	
 	// 체력
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category=FSM)
 	int32 hp = 3;
