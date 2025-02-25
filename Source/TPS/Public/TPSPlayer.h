@@ -55,8 +55,8 @@ public:
 public:
 	UPROPERTY(VisibleAnywhere, Category=PlayerComponent)
 	class UPlayerBaseComponent* playerMove;
-	UPROPERTY(VisibleAnywhere, Category=PlayerComponent)
-	class UPlayerBaseComponent* playerFire;
+	// UPROPERTY(VisibleAnywhere, Category=PlayerComponent)
+	// class UPlayerBaseComponent* playerFire;
 	UPROPERTY(VisibleAnywhere, Category=PlayerComponent)
 	class UPlayerBaseComponent* playerDamage;
 

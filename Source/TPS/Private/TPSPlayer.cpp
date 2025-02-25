@@ -91,7 +91,7 @@ ATPSPlayer::ATPSPlayer()
 	// Player Move 컴포넌트 추가
 	playerMove = CreateDefaultSubobject<UPlayerMove>(TEXT("PlayerMove"));
 	// PlayerFire 컴포넌트 추가
-	playerFire = CreateDefaultSubobject<UPlayerFire>(TEXT("PlayerFire"));
+	// playerFire = CreateDefaultSubobject<UPlayerFire>(TEXT("PlayerFire"));
 	// PlayerDamage 컴포넌트 추가
 	playerDamage = CreateDefaultSubobject<UPlayerDamage>(TEXT("PlayerDamage"));
 }

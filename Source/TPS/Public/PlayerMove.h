@@ -7,7 +7,7 @@
 #include "PlayerMove.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(PlayerComp), meta=(BlueprintSpawnableComponent))
 class TPS_API UPlayerMove : public UPlayerBaseComponent
 {
 	GENERATED_BODY()
