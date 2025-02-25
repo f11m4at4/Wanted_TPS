@@ -96,11 +96,29 @@ ATPSPlayer::ATPSPlayer()
 	playerDamage = CreateDefaultSubobject<UPlayerDamage>(TEXT("PlayerDamage"));
 }
 
+void ATPSPlayer::TestFunc(const FString& msg)
+{
+	PRINTLOGTOSCREEN(TEXT("%s"), *msg);
+}
+
 // Called when the game starts or when spawned
 void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// delegate binding
+	// myDelegate.BindUObject(this, &ATPSPlayer::TestFunc);
+	myDelegate.BindDynamic(this, &ATPSPlayer::TestFunc);
+	// 2 초 후에 호출해주자
+	FTimerHandle handle;
+	GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda(
+		[this]()
+		{
+			myDelegate.ExecuteIfBound(TEXT("Test Delegate!!!"));
+		}
+		), 2, false);
+
+	
 	// EnhancedInput 설정
 	// imc_tps
 	// ia_playerMove

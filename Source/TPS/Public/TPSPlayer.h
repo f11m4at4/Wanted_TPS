@@ -6,11 +6,19 @@
 #include "GameFramework/Character.h"
 #include "TPSPlayer.generated.h"
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FMyDelegate, const FString&, msg);
+
+
 UCLASS()
 class TPS_API ATPSPlayer : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
+	FMyDelegate myDelegate;
+
+	UFUNCTION(BlueprintCallable)
+	void TestFunc(const FString& msg);
 public:
 	// Sets default values for this character's properties
 	ATPSPlayer();
