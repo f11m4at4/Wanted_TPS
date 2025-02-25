@@ -6,7 +6,8 @@
 #include "GameFramework/Character.h"
 #include "TPSPlayer.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FMyDelegate, const FString&, msg);
+// 입력 바인딩 처리할 델리게이트
+DECLARE_MULTICAST_DELEGATE_OneParam(FInputBindingDelegate, class UEnhancedInputComponent*);
 
 
 UCLASS()
@@ -15,10 +16,9 @@ class TPS_API ATPSPlayer : public ACharacter
 	GENERATED_BODY()
 
 public:
-	FMyDelegate myDelegate;
-
-	UFUNCTION(BlueprintCallable)
-	void TestFunc(const FString& msg);
+	// 입력 바인딩 처리 델리게이트
+	FInputBindingDelegate onInputBindingDelegate;
+	
 public:
 	// Sets default values for this character's properties
 	ATPSPlayer();

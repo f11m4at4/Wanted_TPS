@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "InputAction.h"
+#include "TPS.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values for this component's properties
@@ -80,6 +81,7 @@ void UPlayerMove::SetupInputBinding(class UEnhancedInputComponent* pi)
 {
 	Super::SetupInputBinding(pi);
 
+	PRINT_CALLINFO();
 	pi->BindAction(ia_turn, ETriggerEvent::Triggered, this, &UPlayerMove::Turn);
 	pi->BindAction(ia_Lookup, ETriggerEvent::Triggered, this, &UPlayerMove::Lookup);
 

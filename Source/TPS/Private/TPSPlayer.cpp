@@ -96,28 +96,10 @@ ATPSPlayer::ATPSPlayer()
 	playerDamage = CreateDefaultSubobject<UPlayerDamage>(TEXT("PlayerDamage"));
 }
 
-void ATPSPlayer::TestFunc(const FString& msg)
-{
-	PRINTLOGTOSCREEN(TEXT("%s"), *msg);
-}
-
 // Called when the game starts or when spawned
 void ATPSPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// delegate binding
-	// myDelegate.BindUObject(this, &ATPSPlayer::TestFunc);
-	myDelegate.BindDynamic(this, &ATPSPlayer::TestFunc);
-	// 2 초 후에 호출해주자
-	FTimerHandle handle;
-	GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda(
-		[this]()
-		{
-			myDelegate.ExecuteIfBound(TEXT("Test Delegate!!!"));
-		}
-		), 2, false);
-
 	
 	// EnhancedInput 설정
 	// imc_tps
@@ -144,8 +126,10 @@ void ATPSPlayer::SetupPlayerInputComponent(
 	auto pi = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 	if (pi)
 	{
+		PRINT_CALLINFO();
 		// 내 자식 컴포넌트한테 입력 바인딩 하도록 호출
-		playerMove->SetupInputBinding(pi);
-		playerFire->SetupInputBinding(pi);
+		onInputBindingDelegate.Broadcast(pi);
+		// playerMove->SetupInputBinding(pi);
+		// playerFire->SetupInputBinding(pi);
 	}
 }
