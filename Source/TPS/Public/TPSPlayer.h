@@ -57,7 +57,7 @@ public:
 	class UPlayerBaseComponent* playerMove;
 	// UPROPERTY(VisibleAnywhere, Category=PlayerComponent)
 	// class UPlayerBaseComponent* playerFire;
-	UPROPERTY(VisibleAnywhere, Category=PlayerComponent)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category=PlayerComponent)
 	class UPlayerBaseComponent* playerDamage;
 
 	// DamageUI 실행하는 함수

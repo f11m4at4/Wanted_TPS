@@ -6,6 +6,7 @@
 #include "PlayerBaseComponent.h"
 #include "PlayerDamage.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdateHealth);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class TPS_API UPlayerDamage : public UPlayerBaseComponent
@@ -28,4 +29,16 @@ public:
 
 	// 피격받았을 때 호출될 함수
 	void OnDamageProcess();
+
+	// 체력 변수
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Health")
+	int32 hp = 0;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Health")
+	int32 initialHP = 10;
+
+	UFUNCTION()
+	void UpdateHP();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUpdateHealth OnUpdateHealth;
 };
