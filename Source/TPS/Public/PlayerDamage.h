@@ -7,6 +7,7 @@
 #include "PlayerDamage.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdateHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDeath);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class TPS_API UPlayerDamage : public UPlayerBaseComponent
@@ -39,6 +40,11 @@ public:
 	UFUNCTION()
 	void UpdateHP();
 
+	UFUNCTION()
+	void GameOverProcess();
+
 	UPROPERTY(BlueprintAssignable)
 	FOnUpdateHealth OnUpdateHealth;
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerDeath OnPlayerDeath;
 };

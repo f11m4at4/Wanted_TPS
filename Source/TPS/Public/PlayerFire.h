@@ -6,6 +6,8 @@
 #include "PlayerBaseComponent.h"
 #include "PlayerFire.generated.h"
 
+// 총바꿀때 이벤트처리용 델리게이트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeGunDelegate, bool, bUsingGrenade);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class TPS_API UPlayerFire : public UPlayerBaseComponent
@@ -77,5 +79,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Bullet)
 	class UParticleSystem* bulletEffectFactory;
 
-
+	// 총바꾸기 Caller 이벤트객체
+	UPROPERTY(BlueprintAssignable)
+	FOnChangeGunDelegate OnChangeGunDelegate;
 };

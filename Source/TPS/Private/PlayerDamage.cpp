@@ -4,6 +4,7 @@
 #include "PlayerDamage.h"
 
 #include "TPS.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values for this component's properties
@@ -27,6 +28,8 @@ void UPlayerDamage::BeginPlay()
 
 	// 피격 이벤트 받을 이벤트 콜백 함수 등록
 	OnUpdateHealth.AddDynamic(this, &UPlayerDamage::UpdateHP);
+	// 죽을때 처리할 콜백 함수 등록
+	OnPlayerDeath.AddDynamic(this, &UPlayerDamage::GameOverProcess);
 }
 
 
@@ -45,7 +48,7 @@ void UPlayerDamage::OnDamageProcess()
 	OnUpdateHealth.Broadcast();
 	if (hp <=0)
 	{
-		PRINTLOGTOSCREEN(TEXT("Die!!!!"));
+		OnPlayerDeath.Broadcast();
 	}
 	me->ShowDamageUI();
 }
@@ -53,5 +56,11 @@ void UPlayerDamage::OnDamageProcess()
 void UPlayerDamage::UpdateHP()
 {
 	PRINTLOGTOSCREEN(TEXT("Damaged!!! in c++"));
+}
+
+void UPlayerDamage::GameOverProcess()
+{
+	// 게임오버일 때 일시정시 시키자
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
